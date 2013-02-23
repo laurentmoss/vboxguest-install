@@ -6,14 +6,32 @@
 # 2) If the VirtualBox guest additions are installed, but their version does not match that of the VirtualBox host
 # It does nothing if VirtualBox guest additions are already installed with the correct version
 
-# CONFIGURATION OPTIONS
-VBOX_HOST_VERSION=4.1.24
-VBOX_ISO_URL=http://download.virtualbox.org/virtualbox/${VBOX_HOST_VERSION}/VBoxGuestAdditions_${VBOX_HOST_VERSION}.iso
-DESKTOP_PACKAGE=
+# CONFIGURATION OPTIONS:
+# To configure an option, uncomment its corresponding variable declaration, or set its corresponding environment variable before calling this script
+
+## VirtualBox host version
+#VBOX_HOST_VERSION=4.1.24
+
+## URL to download the VirtualBox guest additions ISO from
+#VBOX_ISO_URL=
+
+## Desktop environment packages to be installed prior to installing VirtualBox guest additions
+#DESKTOP_PACKAGE=lxde-core
 
 #--------------------------------------------------------------------
 # NO MORE CONFIGURATION OPTIONS BELOW THIS POINT
 #--------------------------------------------------------------------
+if [ -z "${VBOX_HOST_VERSION}" ]
+then
+	echo "VirtualBox host version cannot be determined. Please configure the VBOX_HOST_VERSION option."
+	exit 1
+fi
+
+if [ -z "${VBOX_ISO_URL}" ]
+then
+	VBOX_ISO_URL=http://download.virtualbox.org/virtualbox/${VBOX_HOST_VERSION}/VBoxGuestAdditions_${VBOX_HOST_VERSION}.iso
+fi
+
 if [ "$(modinfo vboxguest | grep -iw version | awk '{print $2}')" != $VBOX_HOST_VERSION ]
 then
 	# Install core dependencies for install of VirtualBox guest additions
